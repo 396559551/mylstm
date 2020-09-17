@@ -35,7 +35,7 @@ def main():
     parser.add_argument('--pred_length', type=int, default=12,
                         help='prediction length')
     # Number of epochs parameter epoch数参数
-    parser.add_argument('--num_epochs', type=int, default=150,
+    parser.add_argument('--num_epochs', type=int, default=50,
                         help='number of epochs')
     # Frequency at which the model should be saved parameter应保存模型参数的频率
     parser.add_argument('--save_every', type=int, default=400,
@@ -64,7 +64,7 @@ def main():
     parser.add_argument('--grid_size', type=int, default=4,
                         help='Grid size of the social grid')
     # The leave out dataset遗漏数据集
-    parser.add_argument('--leaveDataset', type=int, default=4,
+    parser.add_argument('--leaveDataset', type=int, default=0,
                         help='The dataset index to be left out in training')
     # Lambda regularization parameter (L2)Lambda正则化参数（L2）
     parser.add_argument('--lambda_param', type=float, default=0.0001,
@@ -175,6 +175,7 @@ def train(args):
 
                 # Clip gradients
                 torch.nn.utils.clip_grad_norm(net.parameters(), args.grad_clip)
+
 
                 # Update parameters
                 optimizer.step()

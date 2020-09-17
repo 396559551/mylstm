@@ -14,7 +14,7 @@ import random
 
 class DataLoader():
 
-    def __init__(self, batch_size=50, seq_length=5, datasets=[0, 1, 2, 3, 4], forcePreProcess=False, infer=False):
+    def __init__(self, batch_size=48, seq_length=1, datasets=[0, 1, 2, 3, 4], forcePreProcess=False, infer=False):
         '''
         Initialiser function for the DataLoader class
         params:
@@ -44,7 +44,7 @@ class DataLoader():
         self.val_fraction = 0.2
 
         # Define the path in which the process data would be stored定义存储过程数据的路径
-        data_file = os.path.join(self.data_dir, "trajectories.cpkl")
+        data_file = os.path.join(self.data_dir, "trajectories_1.pkl")
 
         # If the file doesn't exist or forcePreProcess is true
         if not(os.path.exists(data_file)) or forcePreProcess:
@@ -87,9 +87,10 @@ class DataLoader():
         for directory in data_dirs:
             # define path of the csv file of the current dataset
             # file_path = os.path.join(directory, 'pixel_pos.csv')
-            file_path = os.path.join(directory, 'pixel_pos_interpolate.csv')
+            file_path = os.path.join(directory, 'pixel_pos_interpolate_1.csv')
 
-            # Load the data from the csv file
+            # Load the data from the csv filegenfromtxt主要执行两个循环运算。第一个循环将文件的每一行转换成字符串序列。
+            # 第二个循环将每个字符串序列转换为相应的数据类型
             data = np.genfromtxt(file_path, delimiter=',')
 
             # Frame IDs of the frames in the current dataset
@@ -121,8 +122,8 @@ class DataLoader():
                 pedsList = pedsInFrame[1, :].tolist()
 
                 # Add number of peds in the current frame to the stored data
-                numPeds_data[dataset_index].append(len(pedsList))
-
+                #numPeds_data[dataset_index].append(len(pedsList))
+                numPeds_data[dataset_index].append(pedsList)
                 # Initialize the row of the numpy array
                 pedsWithPos = []
 
@@ -134,7 +135,7 @@ class DataLoader():
 
                     # Add their pedID, x, y to the row of the numpy array
                     pedsWithPos.append([ped, current_x, current_y])
-
+                    #629*0.2=125.8
                 if (ind > numFrames * self.val_fraction) or (self.infer):
                     # At inference time, no validation data
                     # Add the details of all the peds in the current frame to all_frame_data
@@ -152,6 +153,7 @@ class DataLoader():
     def load_preprocessed(self, data_file):
         '''
         Function to load the pre-processed data into the DataLoader object
+        将预处理的数据加载到DataLoader对象中的函数
         params:
         data_file : the path to the pickled data file
         '''
@@ -175,11 +177,11 @@ class DataLoader():
             print('Training data from dataset', dataset, ':', len(all_frame_data))
             print('Validation data from dataset', dataset, ':', len(valid_frame_data))
             # Increment the counter with the number of sequences in the current dataset
-           # 使用当前数据集中的序列数递增计数器
+           # 使用当前数据集中的序列数递增计数器 seq_length=3
             counter += int(len(all_frame_data) / (self.seq_length))
             valid_counter += int(len(valid_frame_data) / (self.seq_length))
 
-        # Calculate the number of batches
+        # Calculate the number of batches batch_size=32
         self.num_batches = int(counter/self.batch_size)
         self.valid_num_batches = int(valid_counter/self.batch_size)
         print('Total number of training batches:', self.num_batches * 2)
@@ -187,7 +189,7 @@ class DataLoader():
         # On an average, we need twice the number of batches to cover the data
         # due to randomization introduced
         self.num_batches = self.num_batches * 2
-        # self.valid_num_batches = self.valid_num_batches * 2
+        #self.valid_num_batches = self.valid_num_batches * 2
 
     def next_batch(self, randomUpdate=True):
         '''

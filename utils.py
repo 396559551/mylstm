@@ -14,7 +14,7 @@ import random
 
 class DataLoader():
 
-    def __init__(self, batch_size=48, seq_length=1, datasets=[0, 1, 2, 3, 4], forcePreProcess=False, infer=False):
+    def __init__(self, batch_size=48, seq_length=3, datasets=[0, 1, 2, 3, 4], forcePreProcess=False, infer=False):
         '''
         Initialiser function for the DataLoader class
         params:
@@ -181,8 +181,10 @@ class DataLoader():
             counter += int(len(all_frame_data) / (self.seq_length))
             valid_counter += int(len(valid_frame_data) / (self.seq_length))
 
-        # Calculate the number of batches batch_size=32
+        # Calculate the number of batches batch_size=48
         self.num_batches = int(counter/self.batch_size)
+        print(self.seq_length)
+        print("valid_counter is",valid_counter)
         self.valid_num_batches = int(valid_counter/self.batch_size)
         print('Total number of training batches:', self.num_batches * 2)
         print('Total number of validation batches:', self.valid_num_batches)

@@ -14,7 +14,7 @@ import random
 
 class DataLoader():
 
-    def __init__(self, batch_size=48, seq_length=3, datasets=[0, 1, 2, 3, 4], forcePreProcess=False, infer=False):
+    def __init__(self, batch_size=5, seq_length=20, datasets=[0, 1, 2, 3, 4], forcePreProcess=False, infer=False):
         '''
         Initialiser function for the DataLoader class
         params:
@@ -44,7 +44,7 @@ class DataLoader():
         self.val_fraction = 0.2
 
         # Define the path in which the process data would be stored定义存储过程数据的路径
-        data_file = os.path.join(self.data_dir, "trajectories_1.pkl")
+        data_file = os.path.join(self.data_dir, "trajectories_6w.pkl")
 
         # If the file doesn't exist or forcePreProcess is true
         if not(os.path.exists(data_file)) or forcePreProcess:
@@ -87,11 +87,9 @@ class DataLoader():
         for directory in data_dirs:
             # define path of the csv file of the current dataset
             # file_path = os.path.join(directory, 'pixel_pos.csv')
-            file_path = os.path.join(directory, 'pixel_pos_interpolate_1.csv')
-
-            # Load the data from the csv filegenfromtxt主要执行两个循环运算。第一个循环将文件的每一行转换成字符串序列。
-            # 第二个循环将每个字符串序列转换为相应的数据类型
-            data = np.genfromtxt(file_path, delimiter=',')
+            file_path = os.path.join(directory, 'std6w.csv')
+            with open(file_path) as f:
+                data = np.loadtxt(f, delimiter=',')
 
             # Frame IDs of the frames in the current dataset
             frameList = np.unique(data[0, :]).tolist()
@@ -135,7 +133,7 @@ class DataLoader():
 
                     # Add their pedID, x, y to the row of the numpy array
                     pedsWithPos.append([ped, current_x, current_y])
-                    #629*0.2=125.8
+                    #1639*0.2=
                 if (ind > numFrames * self.val_fraction) or (self.infer):
                     # At inference time, no validation data
                     # Add the details of all the peds in the current frame to all_frame_data
